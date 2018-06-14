@@ -1,8 +1,8 @@
-setwd("~/Documents/LvB/R/20180401 R2")
+setwd("~/Documents/LvB/R/20180528 R2")
 
 # --------------------------------------------------------------
 
-libraries = c("xts","dplyr","RcppRoll","tidyverse", "tidyquant", "TTR")
+libraries = c("xts","dplyr","RcppRoll","tidyverse", "tidyquant", "TTR", "urca", "vars")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {
   install.packages(x)})
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
@@ -13,13 +13,15 @@ dd = read.csv('data_cc_daily_log_returns.csv')
 d = xts(x = dd[,-1],as.Date(dd[,1]))
 
 # table overall correlations ----------------------------------------------
+       
 tmp = d[index(d) >= "2012-01-01"]
 # daily 
 cor(tmp, use = "pairwise.complete.obs" )
 # monthly
 cor(apply.monthly(tmp,mean, na.rm=TRUE), use = "pairwise.complete.obs")
 
-# rolling window ----------------------------------------------------------
+       
+# ----------------------------------------------------------
 #install.packages("tidyverse")
 #install.packages("tidyverse", dependencies=TRUE)
 #install.packages("DBI", dependencies=TRUE)
@@ -124,7 +126,8 @@ dev.off()
 
 
 
-# correlation table -------------------------------------------------------
+# Correlation table -------------------------------------------------------
+       
   dat_name = 'log_returns' # 'prices'
   dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
@@ -138,7 +141,8 @@ dev.off()
   xtable(ct_monthly)
 
 
-# running sd ! REMOVE DIFF(LOG)--------------------------------------------------------------
+# Running SD --------------------------------------------------------------
+       
 for (dat_name in c('log_returns','prices')){
   dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
   d = xts(x = dd[,-1],as.Date(dd[,1]))
@@ -167,6 +171,7 @@ for (dat_name in c('log_returns','prices')){
   
   
   # rolling SD plot with BTC -----------------------------------------------------------------
+  
   pdf(paste0('rw_sd_w_btc','_',dat_name,'.pdf'), family = 'Times')
     plot(
       zoo(tmp[,1]), 
@@ -205,6 +210,7 @@ for (dat_name in c('log_returns','prices')){
 
 
 # log return statistics ---------------------------------------------------
+       
   dd = read.csv(paste0('data_cc_daily_log_returns.csv'))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
   tmp = tmp[index(tmp) >= "2012-01-01"]
@@ -257,8 +263,8 @@ for (dat_name in c('log_returns','prices')){
 
 # Cointtest ---------------------------------------------------------------
 
-  library(urca)
-  library(vars)
+  #library(urca)
+  #library(vars)
   
   dat_name = 'log_returns' # 'prices'
   dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))

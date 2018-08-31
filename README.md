@@ -28,7 +28,7 @@ See also :         crix, econ_arima, econ_crix, econ_garch, econ_vola
 
 
 
-Author:            Raphael Constantin Georg Reule
+Author:            Raphael Reule, Marius Sterling
 
   
 
@@ -46,4 +46,5 @@ Datafile:          R Scripts
 # UCC
 
 Abstract:
+
 Cryptocurrencies refer to a type of digital cash that use distributed ledger - or blockchain technology - to provide secure transactions. These currencies are generally misunderstood. While initially dismissed as fads or bubbles, most large central banks are considering launching their own version of national cryptocurrencies. In contrast to most data in financial economics, there is a plethora of detailed (free) data on the history of every transaction for the cryptocurrency complex. Further, there is little empirically-oriented research on this new asset class. This is an extraordinary research opportunity for academia. We provide a starting point by giving an insight into Cryptocurrency mechanisms and detailing summary statistics and focusing on potential future research avenues in financial economics.

@@ -1,0 +1,18 @@
+% latex table generated in R 3.4.4 by xtable 1.8-2 package
+% Fri Aug 31 15:11:42 2018
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrr}
+  \hline
+ & Mean & Std. Dev. & Skewness & Kurtosis & Min. & Max. \\ 
+  \hline
+GLD & -0.0002 & 0.0096 & -0.6254 & 7.7749 & -0.0919 & 0.0479 \\ 
+  XRP & 0.0023 & 0.1150 & 0.7808 & 20.9500 & -0.9973 & 1.0280 \\ 
+  LTC & 0.0017 & 0.0787 & 0.6401 & 33.6273 & -0.9345 & 0.8904 \\ 
+  ETH & 0.0041 & 0.0790 & -1.1859 & 18.7577 & -0.9163 & 0.3830 \\ 
+  OEX & 0.0005 & 0.0078 & -0.4349 & 3.2116 & -0.0441 & 0.0419 \\ 
+  BTC & 0.0030 & 0.0627 & 4.7168 & 155.8081 & -0.8488 & 1.4744 \\ 
+   \hline
+\end{tabular}
+\end{table}
+

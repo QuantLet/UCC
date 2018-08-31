@@ -1,0 +1,21 @@
+% latex table generated in R 3.4.4 by xtable 1.8-2 package
+% Fri Aug 31 15:11:41 2018
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+\hline
+ & GLD & XRP & LTC & ETH & VIX & OEX & BTC \\ 
+  \hline
+GLD & 1.00 & 0.19 & -0.14 & 0.29 & -0.02 & -0.00 & -0.02 \\ 
+  XRP & 0.19 & 1.00 & 0.71 & 0.61 & 0.03 & -0.08 & 0.47 \\ 
+  LTC & -0.14 & 0.71 & 1.00 & 0.58 & -0.03 & 0.07 & 0.84 \\ 
+  ETH & 0.29 & 0.61 & 0.58 & 1.00 & -0.31 & 0.25 & 0.42 \\ 
+  VIX & -0.02 & 0.03 & -0.03 & -0.31 & 1.00 & -0.72 & -0.13 \\ 
+  OEX & -0.00 & -0.08 & 0.07 & 0.25 & -0.72 & 1.00 & 0.22 \\ 
+  BTC & -0.02 & 0.47 & 0.84 & 0.42 & -0.13 & 0.22 & 1.00 \\ 
+   \hline
+\hline
+\end{tabular}
+\end{table}
+

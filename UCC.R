@@ -6,7 +6,7 @@ colors = c("red3","blue3", "darkorchid3","goldenrod2", "chartreuse4", "steelblue
 names(colors) = c('GLD', "XRP", "LTC", "ETH", 'VIX',"OEX", "BTC")
 print(colors)
 # TRUE = monthly data, FALSE= daily
-monthly = FALSE
+monthly = TRUE
 
 # --------------------------------------------------------------
 
@@ -39,14 +39,14 @@ pdf(filename, family = 'Times')
   plot(
     zoo(tmp[,nam][,1]), 
     type = "n",
-    main = "100 days Rolling Window Standard Deviation",
-    ylab = "Standard Deviation",
+    main = "Closing prices in USD",
+    ylab = "Price",
     xlab = "Time",
     ylim = range(tmp[,nam],na.rm = T)#c(0,4700)
   )
   
   for (j in names(tmp[,nam])){
-    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 3,col = colors[j])
+    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])
   }
 dev.off()
 
@@ -58,14 +58,14 @@ pdf(filename, family = 'Times')
   plot(
     zoo(tmp[,nam][,1]), 
     type = "n",
-    main = "100 days Rolling Window Standard Deviation",
-    ylab = "Standard Deviation",
+    main = "Closing prices in USD",
+    ylab = "Price",
     xlab = "Time",
     ylim = range(tmp[,nam],na.rm = T)#c(0,4700)
   )
   
   for (j in names(tmp[,nam])){
-    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 3,col = colors[j])
+    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])
   }
 dev.off()
 
@@ -77,14 +77,14 @@ pdf(filename, family = 'Times')
   plot(
     zoo(tmp[,nam][,1]), 
     type = "n",
-    main = "100 days Rolling Window Standard Deviation",
-    ylab = "Standard Deviation",
+    main = "Closing prices in USD",
+    ylab = "Price",
     xlab = "Time",
     ylim = range(tmp[,nam],na.rm = T)#c(0,4700)
   )
   
   for (j in names(tmp[,nam])){
-    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 3,col = colors[j])
+    lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])
   }
 dev.off()
 
@@ -141,7 +141,7 @@ for (window in c(100,250)){
     for (j in names(tmp[,nam])){
       jc = nam2 = gsub('rolling_corr_','',j)
       jc = gsub('_BTC','',jc)
-      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 3,col = colors[jc])
+      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 4,col = colors[jc])
     }
   dev.off()
 }
@@ -176,10 +176,11 @@ for (window in c(100,250)){
       main = paste(window,"days Rolling Window Standard Deviation"),
       ylab = "Standard Deviation",
       xlab = "Time",
-      ylim = range(tmp[,nam],na.rm = T)
+      ylim = range(tmp[,nam],na.rm = T),
+      xlim=c("2016-01-01", "2018-08-24") 
     )
     for (j in names(tmp[,nam])){
-      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 3,col = colors[j])
+      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])
     }
   dev.off()
 }

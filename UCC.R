@@ -3,7 +3,7 @@ rm(list=ls())
 # set parameters for plots ------------------------------------------------
 
 colors = c("red3","blue3", "darkorchid3","goldenrod2", "chartreuse4", "steelblue", "pink")
-names(colors) = c('GLD', "XRP", "LTC", "ETH", 'VIX',"OEX", "BTC")
+names(colors) = c('GLD', "XRP", "LTC", "ETH", 'VIX',"GSPC", "BTC")
 print(colors)
 # TRUE = monthly data, FALSE= daily
 monthly = TRUE
@@ -23,7 +23,7 @@ d = xts(x = dd[,-1],as.Date(dd[,1]))
 # table overall correlations ----------------------------------------------
 tmp = d[index(d) >= "2012-01-01"]
 
-# Time series Closing Prices in USD of BTC, GOLD, SP 100 ----------------------------------------------------------
+# Time series Closing Prices in USD of BTC, GOLD, SP 500 ----------------------------------------------------------
 
 dd = read.csv(paste0('data_cc_daily_prices.csv'))
 tmp = xts(x = dd[,-1],as.Date(dd[,1]))
@@ -33,7 +33,7 @@ tmp = tmp[index(tmp) >= "2012-01-01"]
 if(monthly)
   tmp = apply.monthly(tmp, mean, na.rm=TRUE)
 nam = names(tmp)
-nam = sort(nam[nam %in% c('BTC','GLD','OEX')])
+nam = sort(nam[nam %in% c('BTC','GLD','GSPC')])
 filename = paste('CL',ifelse(monthly,'monthly','daily'),paste(nam, collapse = '_'),'.pdf',sep = '_')
 pdf(filename, family = 'Times')
   plot(
@@ -50,7 +50,7 @@ pdf(filename, family = 'Times')
   }
 dev.off()
 
-# Time series Closing Prices in USD of BTC, XRP, LTC, ETH, GOLD, SP 100 ----------------------------------------------------------
+# Time series Closing Prices in USD of BTC, XRP, LTC, ETH, GOLD, SP 500 ----------------------------------------------------------
 nam = names(tmp)
 nam = sort(nam[!nam %in% c('VIX')])
 filename = paste('CL',ifelse(monthly,'monthly','daily'),paste(nam, collapse = '_'),'.pdf',sep = '_')
@@ -69,7 +69,7 @@ pdf(filename, family = 'Times')
   }
 dev.off()
 
-# Time series Closing Prices in USD of XRP, LTC, ETH, GOLD, SP 100 --------
+# Time series Closing Prices in USD of XRP, LTC, ETH, GOLD, SP 500 --------
 nam = names(tmp)
 nam = sort(nam[!nam %in% c('VIX','BTC')])
 filename = paste('CL',ifelse(monthly,'monthly','daily'),paste(nam, collapse = '_'),'.pdf',sep = '_')
@@ -231,7 +231,9 @@ for (window in c(100,250)){
 
 # QQ plots ----------------------------------------------------------------
 
-  for (dat_name in c('log_returns','prices')){
+  #  for (dat_name in c('log_returns','prices')){
+
+  for (dat_name in c('log_returns')){
     dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
     tmp = xts(x = dd[,-1],as.Date(dd[,1]))
     tmp = tmp[index(tmp) >= "2012-01-01"]
@@ -280,7 +282,7 @@ for (window in c(100,250)){
   summary(cointest)
   
   
-  dat = na.omit(tmp[,c('GLD','BTC','OEX','LTC','XRP','ETH')])
+  dat = na.omit(tmp[,c('GLD','BTC','GSPC','LTC','XRP','ETH')])
   #select lag
   VARselect(dat, lag.max = 10, type = "const") # produces lag suggestions
   VARselect(dat, lag.max = 10, type = "const")$selection

@@ -167,6 +167,8 @@ for (window in c(100,250)){
   
   tmp = xts(x = tb %>% select(-'date'),as.POSIXct(as.matrix(tb %>% select('date'))))
   tmp = tmp[!apply(is.na(tmp),1,all),]
+  tmp = tmp[index(tmp) >= "2016-01-01"]
+  
 
   filename = paste('RunSD',window,ifelse(monthly,'monthly','daily'),paste(sort(nam), collapse = '_'),'.pdf',sep = '_')
   pdf(filename, family = 'Times')
@@ -176,8 +178,8 @@ for (window in c(100,250)){
       main = paste(window,"days Rolling Window Standard Deviation"),
       ylab = "Standard Deviation",
       xlab = "Time",
-      ylim = range(tmp[,nam],na.rm = T),
-      xlim=c("2016-01-01", "2018-08-24") 
+      ylim = range(tmp[,nam],na.rm = T)#,
+     # xlim=c("2016-01-01", "2018-08-24") 
     )
     for (j in names(tmp[,nam])){
       lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])

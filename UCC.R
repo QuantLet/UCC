@@ -198,11 +198,13 @@ for (window in c(100,250)){
   ct_monthly = cor(apply.monthly(tmp,mean, na.rm=TRUE), use = "pairwise.complete.obs")
 
 # Daily Correlation -------------------------------------------------------
-  s = print.xtable(xtable(ct_daily),hline.after=c(-1,-1,0,nrow(ct_daily),nrow(ct_daily)))
+  ind = !colnames(ct_daily) %in% 'VIX'
+  s = print.xtable(xtable(ct_daily[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_daily[ind,ind]),nrow(ct_daily[ind,ind])))
   write(s,'correlation_daily_latex.txt')
   
 # Monthly Correlation -----------------------------------------------------
-  s = print.xtable(xtable(ct_monthly),hline.after=c(-1,-1,0,nrow(ct_monthly),nrow(ct_monthly)))
+  ind = !colnames(ct_daily) %in% 'VIX'
+  s = print.xtable(xtable(ct_monthly[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_monthly[ind,ind]),nrow(ct_monthly[ind,ind])))
   write(s,'correlation_monthly_latex.txt')
   
 

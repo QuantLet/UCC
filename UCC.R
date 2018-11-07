@@ -6,7 +6,7 @@ colors = c("red3","blue3", "darkorchid3","goldenrod2", "chartreuse4", "steelblue
 names(colors) = c('GLD', "XRP", "LTC", "ETH", 'VIX',"GSPC", "BTC")
 print(colors)
 # TRUE = monthly data, FALSE= daily
-monthly = TRUE
+monthly = FALSE
 
 # --------------------------------------------------------------
 
@@ -150,22 +150,22 @@ for (window in c(100,250)){
 nam = names(d)
 nam = sort(nam[!nam %in% c('VIX')])
 for (window in c(100,250)){
-  tb = as.tibble(d) %>% mutate(date = date(d)) %>% select(nam,'date')
+  tb = as.tibble(d) %>% mutate(date = date(d)) %>% dplyr::select(nam,'date')
   for (i in colnames(tb)){
     if (i == 'date')
       next
     x = i
     y = tb %>% 
-      select(x,'date') %>% 
+      dplyr::select(x,'date') %>% 
       na.omit() %>% 
       tq_mutate_(mutate_fun = 'runSD', n = window, col_rename = paste0("rolling_sd_",i))
     tb = tb %>% left_join(y)
   }
-  tb = tb %>% select(tb %>% colnames() %>% grep('rolling_sd_',.),'date')
+  tb = tb %>% dplyr::select(tb %>% colnames() %>% grep('rolling_sd_',.),'date')
   colnames(tb) = tb %>% colnames() %>% gsub('rolling_sd_','',.)
   
   
-  tmp = xts(x = tb %>% select(-'date'),as.POSIXct(as.matrix(tb %>% select('date'))))
+  tmp = xts(x = tb %>% dplyr::select(-'date'),as.POSIXct(as.matrix(tb %>% dplyr::select('date'))))
   tmp = tmp[!apply(is.na(tmp),1,all),]
   tmp = tmp[index(tmp) >= "2016-01-01"]
   
@@ -182,7 +182,7 @@ for (window in c(100,250)){
      # xlim=c("2016-01-01", "2018-08-24") 
     )
     for (j in names(tmp[,nam])){
-      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 6,col = colors[j])
+      lines(zoo(na.omit(tmp[,j])), type="l",lwd = 4,col = colors[j])
     }
   dev.off()
 }
@@ -198,11 +198,13 @@ for (window in c(100,250)){
   ct_monthly = cor(apply.monthly(tmp,mean, na.rm=TRUE), use = "pairwise.complete.obs")
 
 # Daily Correlation -------------------------------------------------------
-  s = print.xtable(xtable(ct_daily),hline.after=c(-1,-1,0,nrow(ct_daily),nrow(ct_daily)))
+  ind = !colnames(ct_daily) %in% 'VIX'
+  s = print.xtable(xtable(ct_daily[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_daily[ind,ind]),nrow(ct_daily[ind,ind])))
   write(s,'correlation_daily_latex.txt')
   
 # Monthly Correlation -----------------------------------------------------
-  s = print.xtable(xtable(ct_monthly),hline.after=c(-1,-1,0,nrow(ct_monthly),nrow(ct_monthly)))
+  ind = !colnames(ct_daily) %in% 'VIX'
+  s = print.xtable(xtable(ct_monthly[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_monthly[ind,ind]),nrow(ct_monthly[ind,ind])))
   write(s,'correlation_monthly_latex.txt')
   
 

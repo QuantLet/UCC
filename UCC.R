@@ -2,15 +2,16 @@ rm(list=ls())
 
 # set parameters for plots ------------------------------------------------
 
-colors = c("red3","blue3", "darkorchid3","goldenrod2", "chartreuse4", "steelblue", "pink")
-names(colors) = c('GLD', "XRP", "LTC", "ETH", 'VIX',"GSPC", "BTC")
+colors = c("red1","aquamarine4","goldenrod2", "lightpink3", "blue3", "black")
+names(colors) = c('GLD', "XRP", "ETH", 'VIX',"SP500", "BTC")
 print(colors)
 # TRUE = monthly data, FALSE= daily
+# FALSE for QQ Plot = Daily
 monthly = FALSE
 
 # --------------------------------------------------------------
 
-libraries = c("xts","dplyr","RcppRoll","tidyverse", "tidyquant", "TTR",'xtable')
+libraries = c("xts","dplyr","RcppRoll","tidyverse", "tidyquant", "TTR","xtable", "ggplot2")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {
   install.packages(x)})
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
@@ -21,20 +22,67 @@ dd = read.csv('data_cc_daily_log_returns.csv')
 d = xts(x = dd[,-1],as.Date(dd[,1]))
 
 # table overall correlations ----------------------------------------------
-tmp = d[index(d) >= "2012-01-01"]
+# ETH Genesis Block 2015 30. July 2015
+# XRP Liquidity May 2017
+tmp = d[index(d) >= "2017-05-01"]
 
 # Time series Closing Prices in USD of BTC, GOLD, SP 500 ----------------------------------------------------------
 
 dd = read.csv(paste0('data_cc_daily_prices.csv'))
 tmp = xts(x = dd[,-1],as.Date(dd[,1]))
-tmp = tmp[index(tmp) >= "2012-01-01"]
+tmp = tmp[index(tmp) >= "2017-05-01"]
 # tmp = tmp[,!grepl(pattern = 'VIX',colnames(tmp))]
 # tmp = tmp[,!grepl(pattern = 'VIX',colnames(tmp))]
 if(monthly)
   tmp = apply.monthly(tmp, mean, na.rm=TRUE)
 nam = names(tmp)
-nam = sort(nam[nam %in% c('BTC','GLD','GSPC')])
+nam = sort(nam[nam %in% c('BTC','GLD','SP500')])
 filename = paste('CL',ifelse(monthly,'monthly','daily'),paste(nam, collapse = '_'),'.pdf',sep = '_')
+
+
+
+###
+#start at 0
+###
+library(scales)
+tmp2 = as.xts(t(apply(tmp,1,function(x) x - tmp['2017-05-1'])))
+#tmp2 = sort(tmp2[!tmp2 %in% c('VIX')])
+df2 =  na.omit(fortify(tmp2,melt=TRUE))
+df2[,1] = as.Date(df2[,1])
+pp = ggplot(df2, aes(x=Index,y = Value, color = Series)) + 
+  geom_line(size = 1.5) +
+  #expand_limits(x=as.Date(min(df2[,"Index"]),y=0)) +
+  #scale_x_continuous(expand = c(as.Date(min(df2[,"Index"])),0)) +
+  labs(x = "Date", 
+       y = "Price",
+       title = "Price in USD over time") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = "0.5")) +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(colour = "black", size=1),
+        legend.position="none",
+        axis.text = element_text(size = 20),
+        axis.title= element_text(size=20),
+        title =element_text(size = 20)) +
+  scale_colour_manual(values = c("BTC" = "black", 
+                                 "ETH" = "goldenrod2", 
+                                 "GLD" = "red1",
+                                 "XRP" = "aquamarine4",
+                                 "VIX" = "lightpink3",
+                                 "SP500" = "blue3"))
+pp 
+
+pp + 
+  scale_x_date(labels=date_format("%Y"),date_breaks = "1 years")
+
+
+
+###
+
+
+
+
 pdf(filename, family = 'Times')
   plot(
     zoo(tmp[,nam][,1]), 
@@ -69,7 +117,7 @@ pdf(filename, family = 'Times')
   }
 dev.off()
 
-# Time series Closing Prices in USD of XRP, LTC, ETH, GOLD, SP 500 --------
+# Time series Closing Prices in USD of XRP, ETH, GOLD, SP 500 --------
 nam = names(tmp)
 nam = sort(nam[!nam %in% c('VIX','BTC')])
 filename = paste('CL',ifelse(monthly,'monthly','daily'),paste(nam, collapse = '_'),'.pdf',sep = '_')
@@ -90,7 +138,8 @@ dev.off()
 
 
 
-# rolling window ----------------------------------------------------------
+
+# rolling window COR ----------------------------------------------------------
 for (window in c(100,250)){
   tb = as.tibble(d) %>% mutate(date = date(d))
   tab = combn(1:ncol(d),2)
@@ -146,11 +195,14 @@ for (window in c(100,250)){
   dev.off()
 }
 
-# rolling window (100d) Standard Deviation of BTC, XRP, LTC, ETH,  --------
+
+
+
+# rolling window (100d) Standard Deviation of BTC, XRP, ETH,  --------
 nam = names(d)
 nam = sort(nam[!nam %in% c('VIX')])
 for (window in c(100,250)){
-  tb = as.tibble(d) %>% mutate(date = date(d)) %>% dplyr::select(nam,'date')
+  tb = as.tibble(d) %>% mutate(date = date(d)) %>% dplyr::select(nam,"date")
   for (i in colnames(tb)){
     if (i == 'date')
       next
@@ -167,7 +219,7 @@ for (window in c(100,250)){
   
   tmp = xts(x = tb %>% dplyr::select(-'date'),as.POSIXct(as.matrix(tb %>% dplyr::select('date'))))
   tmp = tmp[!apply(is.na(tmp),1,all),]
-  tmp = tmp[index(tmp) >= "2016-01-01"]
+  tmp = tmp[index(tmp) >= "2017-05-01"]
   
 
   filename = paste('RunSD',window,ifelse(monthly,'monthly','daily'),paste(sort(nam), collapse = '_'),'.pdf',sep = '_')
@@ -179,7 +231,7 @@ for (window in c(100,250)){
       ylab = "Standard Deviation",
       xlab = "Time",
       ylim = range(tmp[,nam],na.rm = T)#,
-     # xlim=c("2016-01-01", "2018-08-24") 
+     # xlim=c("2017-05-01", "2018-12-25") 
     )
     for (j in names(tmp[,nam])){
       lines(zoo(na.omit(tmp[,j])), type="l",lwd = 4,col = colors[j])
@@ -192,18 +244,21 @@ for (window in c(100,250)){
   dat_name = 'log_returns' # 'prices'
   dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
-  tmp = tmp[index(tmp) >= "2012-01-01"]
+  tmp = tmp[, c(6, 3, 2, 1, 4, 5)]
+  tmp = tmp[index(tmp) >= "2017-05-01"]
   ct_daily = cor(tmp, use = "pairwise.complete.obs" )
   # monthly
   ct_monthly = cor(apply.monthly(tmp,mean, na.rm=TRUE), use = "pairwise.complete.obs")
 
 # Daily Correlation -------------------------------------------------------
-  ind = !colnames(ct_daily) %in% 'VIX'
+  #ind = !colnames(ct_daily) %in% 'VIX'
+  ind = colnames(ct_daily)
   s = print.xtable(xtable(ct_daily[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_daily[ind,ind]),nrow(ct_daily[ind,ind])))
   write(s,'correlation_daily_latex.txt')
   
 # Monthly Correlation -----------------------------------------------------
-  ind = !colnames(ct_daily) %in% 'VIX'
+  #ind = !colnames(ct_daily) %in% 'VIX'
+  ind = colnames(ct_daily)
   s = print.xtable(xtable(ct_monthly[ind,ind]),hline.after=c(-1,-1,0,nrow(ct_monthly[ind,ind]),nrow(ct_monthly[ind,ind])))
   write(s,'correlation_monthly_latex.txt')
   
@@ -211,7 +266,7 @@ for (window in c(100,250)){
 # log return statistics ---------------------------------------------------
   dd = read.csv(paste0('data_cc_daily_log_returns.csv'))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
-  tmp = tmp[index(tmp) >= "2012-01-01"]
+  tmp = tmp[index(tmp) >= "2017-05-01"]
   tmp = tmp[,!grepl(pattern = 'VIX',colnames(tmp))]
   if(monthly)
     tmp = apply.monthly(tmp,mean, na.rm=TRUE)
@@ -238,7 +293,7 @@ for (window in c(100,250)){
   for (dat_name in c('log_returns')){
     dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
     tmp = xts(x = dd[,-1],as.Date(dd[,1]))
-    tmp = tmp[index(tmp) >= "2012-01-01"]
+    tmp = tmp[index(tmp) >= "2017-05-01"]
     if(monthly)
       tmp = apply.monthly(tmp,mean, na.rm=TRUE)
     for (j in names(tmp)){
@@ -271,7 +326,7 @@ for (window in c(100,250)){
   dat_name = 'log_returns' # 'prices'
   dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
-  tmp = tmp[index(tmp) >= "2012-01-01"]
+  tmp = tmp[index(tmp) >= "2017-05-01"]
   tmp = apply.monthly(tmp,mean, na.rm=TRUE)
   
   dat = na.omit(tmp[,c('GLD','BTC')])
@@ -284,7 +339,7 @@ for (window in c(100,250)){
   summary(cointest)
   
   
-  dat = na.omit(tmp[,c('GLD','BTC','GSPC','LTC','XRP','ETH')])
+  dat = na.omit(tmp[,c('GLD','BTC','SP500','LTC','XRP','ETH')])
   #select lag
   VARselect(dat, lag.max = 10, type = "const") # produces lag suggestions
   VARselect(dat, lag.max = 10, type = "const")$selection

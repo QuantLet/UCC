@@ -1,0 +1,17 @@
+% latex table generated in R 3.4.4 by xtable 1.8-2 package
+% Fri Jan 11 17:40:53 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & Jarque-Bera statistic & P-value \\ 
+  \hline
+GLD & 12.7546 & 0.0017 \\ 
+  XRP & 1420.7192 & 0.0000 \\ 
+  ETH & 60.2424 & 0.0000 \\ 
+  GSPC & 539.8225 & 0.0000 \\ 
+  BTC & 101.9055 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+

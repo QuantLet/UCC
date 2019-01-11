@@ -264,7 +264,7 @@ for (window in c(100,250)){
   
 
 # log return statistics ---------------------------------------------------
-  dd = read.csv(paste0('data_cc_daily_log_returns.csv'))
+  dd = read.csv(paste0('data_cc_daily_log_returns.csv',sep=";"))
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
   tmp = tmp[index(tmp) >= "2017-05-01"]
   tmp = tmp[,!grepl(pattern = 'VIX',colnames(tmp))]

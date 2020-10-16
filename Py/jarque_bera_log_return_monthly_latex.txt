@@ -1,0 +1,12 @@
+\begin{tabular}{lrr}
+\toprule
+{} &  Jarque-Bera statistic &  P-value \\
+\midrule
+0 &                 3.4348 &   0.1795 \\
+1 &               160.7557 &   0.0000 \\
+2 &                 0.9501 &   0.6219 \\
+3 &                 5.6078 &   0.0606 \\
+4 &                 7.1640 &   0.0278 \\
+5 &                 0.6558 &   0.7204 \\
+\bottomrule
+\end{tabular}

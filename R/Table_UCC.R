@@ -24,7 +24,8 @@ lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
 
 
-dd = read.csv('data_cc_daily_log_returns.csv')
+dd = read.csv("data_cc_daily_log_returns.csv", header = F, encoding = "utf-8")
+dd = dd[-1,]
 d0 = xts(x = dd[,-1],as.Date(dd[,1]))
 
 
@@ -46,7 +47,8 @@ tmp = d[index(d) >= "2017-05-01"]
 # correlation table -------------------------------------------------------
 # correlation table -------------------------------------------------------
   dat_name = 'log_returns' # 'prices'
-  dd = read.csv(paste0('data_cc_daily_',dat_name,'.csv'))
+  dd = read.csv(paste0("data_cc_daily_",dat_name,".csv"), header = F, encoding = "utf-8")
+  dd = dd[-1,]
   tmp = xts(x = dd[,-1],as.Date(dd[,1]))
   tmp = tmp[, c(6, 3, 2, 1, 4, 5)]
   tmp = tmp[index(tmp) >= "2017-05-01"]
@@ -139,7 +141,7 @@ tmp = d[index(d) >= "2017-05-01"]
   tmp = tmp[index(tmp) >= "2017-05-01"]
   tmp = apply.monthly(tmp,mean, na.rm=TRUE)
   
-  dat = na.omit(tmp[,c('GLD','BTC')])
+  dat = na.omit(tmp[,c(1,5)])
   #select lag
   VARselect(dat, lag.max = 5, type = "const") # produces lag suggestions
   VARselect(dat, lag.max = 5, type = "const")$selection
@@ -149,7 +151,7 @@ tmp = d[index(d) >= "2017-05-01"]
   summary(cointest)
   
   
-  dat = na.omit(tmp[,c('GLD','BTC','SP500','LTC','XRP','ETH')])
+  dat = na.omit(tmp[,c(1,5,4,2,3)])
   #select lag
   VARselect(dat, lag.max = 10, type = "const") # produces lag suggestions
   VARselect(dat, lag.max = 10, type = "const")$selection
